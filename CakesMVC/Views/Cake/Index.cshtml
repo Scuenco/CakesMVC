@@ -1,0 +1,18 @@
+﻿@model List<CakesMVC.Models.CakeViewModel>
+<h2>Cakes</h2>
+@Html.ActionLink("Add Cake", "AddCake", null, new { @class = "btn btn-default" })
+<!--for each cake-->
+<div class="row">
+    @foreach (var c in Model)
+    {
+        <div class="col-xs-6 col-md-3">
+            <a href="#" class="thumbnail">
+                <img src="@Url.Content(c.Image)" alt="Image">
+            </a>
+            <h3>@Html.ActionLink(@c.Title, "Details", new { id = c.CakeId })</h3>
+        </div>
+        <div class="caption">
+        </div>
+    }
+</div>
+

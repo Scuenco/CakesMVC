@@ -1,0 +1,17 @@
+﻿@model CakesMVC.Models.AddCakeToAlbumViewModel
+<h2>Add Cake To Album</h2>
+
+<form method="post">
+    @Html.LabelFor(x => x.SelectedCakeId)
+    @Html.DropDownListFor(x => x.SelectedCakeId, new SelectList(Model.Cakes, "CakeId", "Title", Model.Cakes.First().CakeId))
+    
+    @Html.LabelFor(x => x.Title)
+    @Html.DisplayTextFor(x => x.Title)
+    @Html.HiddenFor(x => x.AlbumId)
+@*
+    @Html.DropDownListFor(x => x.SelectedAlbumId, new SelectList(Model.Albums, "AlbumId", "Title", Model.Albums.First().AlbumId))
+*@
+    
+    <button class="btn btn-default">Submit</button>
+</form>
+

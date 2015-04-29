@@ -1,0 +1,22 @@
+﻿@model CakesMVC.Models.CakeViewModel
+<h2>@Model.Title</h2>
+<div class="well">
+
+    @Html.ActionLink("Edit", "EditCake", new { id = Model.CakeId }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Delete", "DeleteCake", new { id = Model.CakeId }, new { @class = "btn btn-danger" })<br />
+    <br />
+    <img src="@Url.Content(@Model.Image)" height="320" width="225" /><br />
+    <h3>@Model.Remarks</h3>
+    <br />
+    <!--for each album-->
+    @foreach (var a in Model.Albums)
+    {
+        @a.Title
+        <br />
+        @*
+            @Html.ActionLink("Edit Album", "EditAlbum", new { id = a.AlbumId }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Delete Album", "DeleteAlbum", new { id = a.AlbumId }, new { @class = "btn btn-danger" })*@
+        <br />
+    }
+</div>
+

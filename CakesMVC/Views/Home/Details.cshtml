@@ -1,0 +1,36 @@
+﻿@model CakesMVC.Models.AlbumIndexViewModel
+<h2>@Model.Title</h2>
+@*
+<div class="well">
+    @Html.ActionLink("Add Cake To Album", "AddCakeToAlbum", new { id = Model.AlbumId }, new { @class = "btn btn-default" })
+    <br />
+    <!--for each cake-->
+    @foreach (var c in Model.Cakes)
+    {
+        <img src="@Url.Content(c.Thumbnail)" height="75" width="75" /><h3>@c.Title</h3>
+        <br />
+        @*
+            @Html.ActionLink("Edit Cake", "EditCake", new { id = c.CakeId }, new { @class = "btn btn-primary" })
+            @Html.ActionLink("Delete Cake", "DeleteCake", new { id = c.CakeId }, new { @class = "btn btn-danger" })
+        <br />
+    }
+</div>
+*@
+
+@Html.ActionLink("Add Cake To Album", "AddCakeToAlbum", new { id = Model.AlbumId }, new { @class = "btn btn-default" })
+<br />
+<!--for each cake-->
+<div class="row">
+    @foreach (var c in Model.Cakes)
+    {
+        <div class="col-xs-6 col-md-3">
+            <a href="#" class="thumbnail">
+                <img src="@Url.Content(c.Image)"  height="134" width="180" alt="...">
+            </a>
+            <h3>@c.Title</h3>
+           @* @Html.ActionLink("Delete From Album", "DeleteCakeFromAlbum", new { id = Model.AlbumId, cakeid = c.CakeId }, new { @class = "btn btn-danger" })*@
+        </div>
+    }
+</div>
+
+

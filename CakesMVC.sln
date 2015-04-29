@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CakesMVC", "CakesMVC\CakesMVC.csproj", "{4EC8C925-F189-46C4-B397-D97B19F46DCD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{D9235304-C2E4-4D1B-AE99-0030F57A2855}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\AzureWebsitePublishModule.psm1 = PublishScripts\AzureWebsitePublishModule.psm1
+		PublishScripts\Publish-WebApplicationWebsite.ps1 = PublishScripts\Publish-WebApplicationWebsite.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configurations", "{EE300768-C145-44D6-A82E-58FE91ADD3A1}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\Configurations\CakesMVC-WAWS-dev.json = PublishScripts\Configurations\CakesMVC-WAWS-dev.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CakesMVC.Data", "CakesMVC.Data\CakesMVC.Data.csproj", "{2CDF5E42-1186-428C-B29B-53E175FBEC24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CakesMVC.Model", "CakesMVC.Model\CakesMVC.Model.csproj", "{E820BC94-A739-4BA4-8079-3B808319D3DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EC8C925-F189-46C4-B397-D97B19F46DCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC8C925-F189-46C4-B397-D97B19F46DCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC8C925-F189-46C4-B397-D97B19F46DCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC8C925-F189-46C4-B397-D97B19F46DCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CDF5E42-1186-428C-B29B-53E175FBEC24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CDF5E42-1186-428C-B29B-53E175FBEC24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CDF5E42-1186-428C-B29B-53E175FBEC24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CDF5E42-1186-428C-B29B-53E175FBEC24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E820BC94-A739-4BA4-8079-3B808319D3DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E820BC94-A739-4BA4-8079-3B808319D3DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E820BC94-A739-4BA4-8079-3B808319D3DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E820BC94-A739-4BA4-8079-3B808319D3DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EE300768-C145-44D6-A82E-58FE91ADD3A1} = {D9235304-C2E4-4D1B-AE99-0030F57A2855}
+	EndGlobalSection
+EndGlobal
