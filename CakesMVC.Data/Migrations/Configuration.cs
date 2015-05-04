@@ -26,7 +26,7 @@ namespace CakesMVC.Data.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
-            Seeder.Seed(context, true, true, true, true, true);
+            Seeder.Seed(context, true, true, true, true, true, true);
         }
     }
 }

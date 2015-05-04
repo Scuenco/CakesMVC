@@ -14,6 +14,8 @@ namespace CakesMVC.Data
         public DbSet<Album> Albums { get; set; }
         public DbSet<Cake> Cakes { get; set; }
         public DbSet<Cakes_Albums> CakesAlbums { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

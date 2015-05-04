@@ -39,9 +39,11 @@
         <span class="sr-only">Next</span>
     </a>
 </div>
-
+<br />
+<div style="background-color:mediumpurple">
+@Html.ActionLink("Add An Album", "AddAlbum", null, new { @class = "btn btn-primary" })
+</div>
 <!--Thumbnails Custom-->
-@Html.ActionLink("Add An Album", "AddAlbum", null, new { @class = "btn btn-default" })
 <div class="row">
     @foreach (var a in Model)
     {

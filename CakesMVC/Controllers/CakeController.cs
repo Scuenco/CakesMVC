@@ -1,4 +1,6 @@
-﻿using CakesMVC.Data;
+﻿using CakesMVC.Adapters.Adapters;
+using CakesMVC.Adapters.Interfaces;
+using CakesMVC.Data;
 using CakesMVC.Model;
 using CakesMVC.Models;
 using System;
@@ -9,56 +11,37 @@ using System.Web.Mvc;
 
 namespace CakesMVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CakeController : Controller
     {
         // GET: Cake
+        private ICakeAdapter adapter;
+        public CakeController()
+        {
+            adapter = new CakeAdapter();
+        }
+        public CakeController(ICakeAdapter _adapter)
+        {
+            adapter = _adapter;
+        }
         /// <summary>
         /// Displays a list of Cakes
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         public ActionResult Index()
         {
-            List<CakeViewModel> model;
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                model = db.Cakes.Where(x => x.IsDeleted == false).Select(c => new CakeViewModel()
-                {
-                    CakeId = c.CakeId,
-                    Image = c.Image,
-                    IsDeleted = c.IsDeleted,
-                    Remarks = c.Remarks,
-                    Thumbnail = c.Thumbnail,
-                    Title = c.Title
-                }).ToList();
-            }
+            List<CakeViewModel> model = adapter.GetAllCakes();
             return View(model);
         }
         /// <summary>
         /// Displays Cake details
         /// </summary>
         /// <returns>Cake details with a list of albums</returns>
+        [AllowAnonymous]
         public ActionResult Details(int id)
         {
-            CakeViewModel model;
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                model = db.Cakes.Where(x => x.CakeId == id).Select(c => new CakeViewModel()
-                {
-                   CakeId = c.CakeId,
-                   Image = c.Image,
-                   IsDeleted = c.IsDeleted,
-                   Remarks = c.Remarks,
-                   Thumbnail = c.Thumbnail,
-                   Title = c.Title,
-                   Albums = c.Cakes_Albums.Select(x => new AlbumViewModel()
-                   {
-                       AlbumId = x.Album.AlbumId,
-                       IsDeleted = x.Album.IsDeleted,
-                       Thumbnail = x.Album.Thumbnail,
-                       Title = x.Album.Title
-                   }).ToList()
-                }).FirstOrDefault();
-            }
+            CakeViewModel model = adapter.GetDetails(id);
             return View(model);
         }
 
@@ -76,10 +59,12 @@ namespace CakesMVC.Controllers
         [HttpPost]
         public ActionResult AddCake(Cake model)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            ViewBag.Message = "Add A Cake";
+            int result = adapter.AddCake(model);
+            if (result != 1)
             {
-                db.Cakes.Add(model);
-                db.SaveChanges();
+                ViewBag.ErrorMessage = "A cake with the title '" + model.Title + "' already exists.";
+                return View(model);
             }
             return RedirectToAction("Index");
         }
@@ -87,33 +72,42 @@ namespace CakesMVC.Controllers
         public ActionResult EditCake(int id)
         {
             ViewBag.Message = "Edit Cake Details";
-            Cake model;
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                model = db.Cakes.FirstOrDefault(x => x.CakeId == id);
-            }
+            Cake model = adapter.EditCake(id);
             return View("AddCake", model);
         }
         [HttpPost]
         public ActionResult EditCake(Cake model)
         {
-            Cake cake;
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            
+            //Cake cake;
+            //using (ApplicationDbContext db = new ApplicationDbContext())
+            //{
+            //    cake = db.Cakes.FirstOrDefault(x => x.CakeId == model.CakeId);
+            //    cake.Title = model.Title;
+            //    cake.Remarks = model.Remarks;
+            //    db.SaveChanges();
+            //}
+            int result = adapter.EditCake(model);
+            if (result != 1)
             {
-                cake = db.Cakes.FirstOrDefault(x => x.CakeId == model.CakeId);
-                cake.Title = model.Title;
-                cake.Remarks = model.Remarks;
-                db.SaveChanges();
+                ViewBag.Message = "An error occurred in editing a cake.";
+                return View("AddCake", model);
             }
             return RedirectToAction("Index");
         }
         public ActionResult DeleteCake(int id)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            //using (ApplicationDbContext db = new ApplicationDbContext())
+            //{
+            //    Cake model = db.Cakes.FirstOrDefault(x => x.CakeId == id);
+            //    model.IsDeleted = true;
+            //    db.SaveChanges();
+            //}
+            int result = adapter.DeleteCake(id);
+            if (result != 1)
             {
-                Cake model = db.Cakes.FirstOrDefault(x => x.CakeId == id);
-                model.IsDeleted = true;
-                db.SaveChanges();
+                ViewBag.Message = "An error occurred in deleting a cake.";
+                return View("Index");
             }
             return RedirectToAction("Index");
         }

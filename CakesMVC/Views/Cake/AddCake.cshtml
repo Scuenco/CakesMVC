@@ -4,7 +4,9 @@
 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
     @ViewBag.Message
 </button>
-
+<div style="color:red">
+    <h4>@ViewBag.ErrorMessage</h4>
+</div>
 <form method="post">
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -16,6 +18,7 @@
                 </div>
                 <div class="modal-body">
                     @Html.LabelFor(x => x.Title): @Html.TextBoxFor(x => x.Title)<br />
+                    @Html.ValidationMessageFor(x => x.Title, "Please enter a title.")
                     @Html.LabelFor(x => x.Remarks): @Html.TextAreaFor(x => x.Remarks)
                     @Html.HiddenFor(x => x.CakeId)
                     @Html.HiddenFor(x => x.Thumbnail)

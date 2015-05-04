@@ -1,4 +1,6 @@
-﻿using CakesMVC.Data;
+﻿using CakesMVC.Adapters.Adapters;
+using CakesMVC.Adapters.Interfaces;
+using CakesMVC.Data;
 using CakesMVC.Model;
 using CakesMVC.Models;
 using System;
@@ -12,6 +14,15 @@ namespace CakesMVC.Controllers
      [Authorize(Roles = "Admin")]
     public class HomeController : Controller
     {
+         private IAlbumAdapter adapter;
+         public HomeController()
+         {
+             adapter = new AlbumAdapter();
+         }
+         public HomeController(IAlbumAdapter _adapter)
+         {
+             adapter = _adapter;
+         }
 
         /// <summary>
         /// Displays a list of Albums
@@ -20,18 +31,7 @@ namespace CakesMVC.Controllers
         [AllowAnonymous]
         public ActionResult Index()
         {
-            List<AlbumIndexViewModel> model;
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                model = db.Albums.Where(x => x.IsDeleted == false).Select(a => new AlbumIndexViewModel()
-                    {
-                        AlbumId = a.AlbumId,
-                        Title = a.Title,
-                        Thumbnail = a.Thumbnail,
-                        IsDeleted = a.IsDeleted,
-
-                    }).ToList();
-            }
+            List<AlbumIndexViewModel> model = adapter.GetAllAlbums();
             return View(model);
         }
         /// <summary>
@@ -41,112 +41,85 @@ namespace CakesMVC.Controllers
         [AllowAnonymous]
         public ActionResult Details(int id)
         {
-            AlbumIndexViewModel model;
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                model = db.Albums.Where(x => x.AlbumId == id).Select(a => new AlbumIndexViewModel()
-                    {
-                        AlbumId = a.AlbumId,
-                        Title = a.Title,
-                        Thumbnail = a.Thumbnail,
-                        IsDeleted = a.IsDeleted,
-                        Cakes = a.Cakes_Albums.Select(c => new CakeViewModel()
-                        {
-                            CakeId = c.Cake.CakeId,
-                            Title = c.Cake.Title,
-                            Remarks = c.Cake.Remarks,
-                            Thumbnail = c.Cake.Thumbnail,
-                            IsDeleted = c.Cake.IsDeleted,
-                            Image = c.Cake.Image
-                        }).ToList()
-                    }).FirstOrDefault();
-            }
+            AlbumIndexViewModel model = adapter.GetDetails(id);
             return View(model);
         }
         public ActionResult AddAlbum()
         {
             ViewBag.Message = "Add An Album";
-            Album model = new Album()
-            {
-                Thumbnail = "~/Images/IvoryWedding-med.jpg"
-            };
-
+            AlbumViewModel model = adapter.AddAlbum();
             return View(model);
         }
         [HttpPost]
-        public ActionResult AddAlbum(Album model)
+        public ActionResult AddAlbum(AlbumViewModel model)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            ViewBag.Message = "Add An Album";
+            if (ModelState.IsValid)
             {
-                db.Albums.Add(model);
-                db.SaveChanges();
+                int result = adapter.AddAlbum(model);
+                if (result != 1)//album already exists
+                {
+                    ViewBag.ErrorMessage = "An album with the title '" + model.Title + "' already exists.";
+                    //populate the dropdownlist
+                    model.Thumbnails = adapter.AddAlbum().Thumbnails;
+                    return View(model);
+                }
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
+            else //model is not valid
+            {
+                ViewBag.ErrorMessage = "Please enter an album title.";
+                //populate the dropdownlist
+                model.Thumbnails = adapter.AddAlbum().Thumbnails;
+                return View(model);
+            }
         }
         public ActionResult EditAlbum(int id)
         {
             ViewBag.Message = "Edit Album";
-            Album album;
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                album = db.Albums.FirstOrDefault(x => x.AlbumId == id);
-            }
+            AlbumViewModel album = adapter.EditAlbum(id);
             return View("AddAlbum", album);
         }
         [HttpPost]
-        public ActionResult EditAlbum(Album model)
+        public ActionResult EditAlbum(AlbumViewModel model)
         {
             ViewBag.Message = "Edit Album";
-            Album album;
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            int result = adapter.EditAlbum(model);
+            if (result != 1)
             {
-                album = db.Albums.FirstOrDefault(x => x.AlbumId == model.AlbumId);
-                album.Title = model.Title;
-                db.SaveChanges();
+                ViewBag.Message = "An error occurred while editing an album.";
+                return View("AddAlbum", model);
             }
             return RedirectToAction("Index");
         }
         public ActionResult DeleteAlbum(int id)
         {
-            using (ApplicationDbContext db = new ApplicationDbContext())
+            int result = adapter.DeleteAlbum(id);
+            if (result != 1)
             {
-                Album model = db.Albums.FirstOrDefault(x => x.AlbumId == id);
-                //db.Albums.Remove(model);
-                model.IsDeleted = true;
-                db.SaveChanges();
+                ViewBag.Message = "An error occurred while deleting an album.";
+                return View("Index");
             }
             return RedirectToAction("Index");
         }
         public ActionResult AddCakeToAlbum(int id) //AlbumId
         {
-            AddCakeToAlbumViewModel model = new AddCakeToAlbumViewModel();
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                //model.Albums = db.Albums.ToList();
-                Album album = db.Albums.FirstOrDefault(x => x.AlbumId == id);
-
-                model.AlbumId = id;
-                model.Title = album.Title;
-                model.Cakes = db.Cakes.ToList();
-            }
+            AddCakeToAlbumViewModel model = adapter.AddCakeToAlbum(id);
             return View(model);
         }
 
         [HttpPost]
         public ActionResult AddCakeToAlbum(AddCakeToAlbumViewModel data)
         {
-            Cakes_Albums model = new Cakes_Albums()
+            int result = adapter.AddCakeToAlbum(data);
+            if (result != 1)
             {
-                AlbumId = data.AlbumId,
-                CakeId = data.SelectedCakeId
-            };
-            using (ApplicationDbContext db = new ApplicationDbContext())
-            {
-                db.CakesAlbums.Add(model);
-                db.SaveChanges();
+                ViewBag.Message = "An error occurred while adding a cake to the album.";
+                return View();
             }
             return RedirectToAction("Details", new { id = data.AlbumId });
         }
+         /*
         public ActionResult DeleteCakeFromAlbum(int albumid, int cakeid)
         {
             using (ApplicationDbContext db = new ApplicationDbContext())
@@ -157,6 +130,8 @@ namespace CakesMVC.Controllers
             }
             return RedirectToAction("Index");
         }
+        */
+
         [AllowAnonymous]
         public ActionResult About()
         {
